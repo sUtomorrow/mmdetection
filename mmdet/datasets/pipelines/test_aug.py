@@ -7,12 +7,13 @@ from .compose import Compose
 @PIPELINES.register_module
 class MultiScaleFlipAug(object):
 
-    def __init__(self, transforms, img_scale, flip=False):
+    def __init__(self, transforms, img_scale, flip=False, flip_type='horizontal'):
         self.transforms = Compose(transforms)
         self.img_scale = img_scale if isinstance(img_scale,
                                                  list) else [img_scale]
         assert mmcv.is_list_of(self.img_scale, tuple)
         self.flip = flip
+        self.flip_type = flip_type
 
     def __call__(self, results):
         aug_data = []
@@ -22,6 +23,7 @@ class MultiScaleFlipAug(object):
                 _results = results.copy()
                 _results['scale'] = scale
                 _results['flip'] = flip
+                _results['flip_type'] = self.flip_type
                 data = self.transforms(_results)
                 aug_data.append(data)
         # list of dict to dict of list

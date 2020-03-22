@@ -422,9 +422,9 @@ class CascadeRCNN(BaseDetector, RPNTestMixin):
             img_shape = img_metas[0]['img_shape']
             scale_factor = img_metas[0]['scale_factor']
             flip = img_metas[0]['flip']
-
+            flip_type = img_metas[0]['flip_type']
             proposals = bbox_mapping(proposal_list[0][:, :4], img_shape,
-                                     scale_factor, flip)
+                                     scale_factor, flip, flip_type=flip_type)
             # "ms" in variable names means multi-stage
             ms_scores = []
 
@@ -481,8 +481,9 @@ class CascadeRCNN(BaseDetector, RPNTestMixin):
                     img_shape = img_metas[0]['img_shape']
                     scale_factor = img_metas[0]['scale_factor']
                     flip = img_metas[0]['flip']
+                    flip_type = img_metas[0]['flip_type']
                     _bboxes = bbox_mapping(det_bboxes[:, :4], img_shape,
-                                           scale_factor, flip)
+                                           scale_factor, flip, flip_type=flip_type)
                     mask_rois = bbox2roi([_bboxes])
                     for i in range(self.num_stages):
                         mask_feats = self.mask_roi_extractor[i](
@@ -494,7 +495,7 @@ class CascadeRCNN(BaseDetector, RPNTestMixin):
                         aug_masks.append(mask_pred.sigmoid().cpu().numpy())
                         aug_img_metas.append(img_meta)
                 merged_masks = merge_aug_masks(aug_masks, aug_img_metas,
-                                               self.test_cfg.rcnn)
+                                               self.test_cfg.rcnn, flip_type=flip_type)
 
                 ori_shape = img_metas[0][0]['ori_shape']
                 segm_result = self.mask_head[-1].get_seg_masks(
