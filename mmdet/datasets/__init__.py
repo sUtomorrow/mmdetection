@@ -1,6 +1,6 @@
 from .builder import build_dataset
 from .cityscapes import CityscapesDataset
-from .coco import CocoDataset
+from .coco import CocoDataset, SonarDataset, KesciDataset
 from .custom import CustomDataset
 from .dataset_wrappers import ConcatDataset, RepeatDataset
 from .loader import DistributedGroupSampler, GroupSampler, build_dataloader
