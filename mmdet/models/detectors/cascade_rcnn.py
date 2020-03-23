@@ -409,21 +409,25 @@ class CascadeRCNN(BaseDetector, RPNTestMixin):
         If rescale is False, then returned bboxes and masks will fit the scale
         of imgs[0].
         """
+        feats = list(self.extract_feats(imgs))
+
         # recompute feats to save memory
+
         proposal_list = self.aug_test_rpn(
-            self.extract_feats(imgs), img_metas, self.test_cfg.rpn)
+            feats, img_metas, self.test_cfg.rpn)
 
         rcnn_test_cfg = self.test_cfg.rcnn
         aug_bboxes = []
         aug_scores = []
-        for x, img_meta in zip(self.extract_feats(imgs), img_metas):
+        for x, img_meta in zip(feats, img_metas):
             # only one image in the batch
             img_shape = img_meta[0]['img_shape']
             scale_factor = img_meta[0]['scale_factor']
             flip = img_meta[0]['flip']
+            flip_direction = img_meta[0]['flip_direction']
 
             proposals = bbox_mapping(proposal_list[0][:, :4], img_shape,
-                                     scale_factor, flip)
+                                     scale_factor, flip, flip_direction=flip_direction)
             # "ms" in variable names means multi-stage
             ms_scores = []
 
@@ -476,7 +480,7 @@ class CascadeRCNN(BaseDetector, RPNTestMixin):
             else:
                 aug_masks = []
                 aug_img_metas = []
-                for x, img_meta in zip(self.extract_feats(imgs), img_metas):
+                for x, img_meta in zip(feats, img_metas):
                     img_shape = img_meta[0]['img_shape']
                     scale_factor = img_meta[0]['scale_factor']
                     flip = img_meta[0]['flip']

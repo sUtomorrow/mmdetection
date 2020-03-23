@@ -247,7 +247,11 @@ def _dist_train(model,
     if cfg.resume_from:
         runner.resume(cfg.resume_from)
     elif cfg.load_from:
-        runner.load_checkpoint(cfg.load_from)
+        if not isinstance(cfg.load_from, list):
+            cfg.load_from = [cfg.load_from, ]
+        print('load_from', cfg.load_from)
+        for weight_path in cfg.load_from:
+            runner.load_checkpoint(weight_path)
     runner.run(data_loaders, cfg.workflow, cfg.total_epochs)
 
 
@@ -301,5 +305,9 @@ def _non_dist_train(model,
     if cfg.resume_from:
         runner.resume(cfg.resume_from)
     elif cfg.load_from:
-        runner.load_checkpoint(cfg.load_from)
+        if not isinstance(cfg.load_from, list):
+            cfg.load_from = [cfg.load_from, ]
+        print('load_from', cfg.load_from)
+        for weight_path in cfg.load_from:
+            runner.load_checkpoint(weight_path)
     runner.run(data_loaders, cfg.workflow, cfg.total_epochs)
