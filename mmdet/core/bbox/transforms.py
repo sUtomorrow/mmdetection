@@ -130,8 +130,8 @@ def bbox_flip(bboxes, img_shape, flip_direction='horizontal'):
             flipped[:, 2::4] = img_shape[1] - bboxes[:, 0::4] - 1
         else:
             flipped = bboxes.clone()
-            flipped[:, 1::4] = img_shape[0] - bboxes[:, 1::4] - 1
-            flipped[:, 3::4] = img_shape[0] - bboxes[:, 3::4] - 1
+            flipped[:, 1::4] = img_shape[0] - bboxes[:, 3::4] - 1
+            flipped[:, 3::4] = img_shape[0] - bboxes[:, 1::4] - 1
         return flipped
     elif isinstance(bboxes, np.ndarray):
         # return mmcv.bbox_flip(bboxes, img_shape)
@@ -141,8 +141,8 @@ def bbox_flip(bboxes, img_shape, flip_direction='horizontal'):
             flipped[:, 2::4] = img_shape[1] - bboxes[:, 0::4] - 1
         else:
             flipped = bboxes.copy()
-            flipped[:, 1::4] = img_shape[0] - bboxes[:, 1::4] - 1
-            flipped[:, 3::4] = img_shape[0] - bboxes[:, 3::4] - 1
+            flipped[:, 1::4] = img_shape[0] - bboxes[:, 3::4] - 1
+            flipped[:, 3::4] = img_shape[0] - bboxes[:, 1::4] - 1
         return flipped
 
 

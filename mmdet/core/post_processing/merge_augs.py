@@ -29,9 +29,10 @@ def merge_aug_proposals(aug_proposals, img_metas, rpn_test_cfg):
         img_shape = img_info['img_shape']
         scale_factor = img_info['scale_factor']
         flip = img_info['flip']
+        flip_direction = img_info[0]['flip_direction']
         _proposals = proposals.clone()
         _proposals[:, :4] = bbox_mapping_back(_proposals[:, :4], img_shape,
-                                              scale_factor, flip)
+                                              scale_factor, flip, flip_direction=flip_direction)
         recovered_proposals.append(_proposals)
     aug_proposals = torch.cat(recovered_proposals, dim=0)
     merged_proposals, _ = nms(aug_proposals, rpn_test_cfg.nms_thr)
@@ -60,7 +61,8 @@ def merge_aug_bboxes(aug_bboxes, aug_scores, img_metas, rcnn_test_cfg):
         img_shape = img_info[0]['img_shape']
         scale_factor = img_info[0]['scale_factor']
         flip = img_info[0]['flip']
-        bboxes = bbox_mapping_back(bboxes, img_shape, scale_factor, flip)
+        flip_direction = img_info[0]['flip_direction']
+        bboxes = bbox_mapping_back(bboxes, img_shape, scale_factor, flip, flip_direction=flip_direction)
         recovered_bboxes.append(bboxes)
     bboxes = torch.stack(recovered_bboxes).mean(dim=0)
     if aug_scores is None:

@@ -129,7 +129,8 @@ class SEBottleneck(_Bottleneck):
             if self.downsample is not None:
                 identity = self.downsample(x)
 
-            out += identity
+            #out += identity
+            out = self.se_module(out) + identity
 
             return out
 
@@ -260,7 +261,7 @@ class SEResNeXt(ResNet):
         152: (SEBottleneck, (3, 8, 36, 3))
     }
 
-    def __init__(self, groups=1, base_width=4, reduction=16, **kwargs):
+    def __init__(self, groups=32, base_width=4, reduction=16, **kwargs):
         super(SEResNeXt, self).__init__(**kwargs)
         self.groups = groups
         self.base_width = base_width
